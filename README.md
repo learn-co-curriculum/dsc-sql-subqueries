@@ -3,8 +3,8 @@
 
 ## Introduction
 
-SQL queries can get complex. For example, you might have been a little thrown off from the many to many join in the last lab. There you had to join four tables. This is just the tip of the iceberg. Depending on how your database is set up, you might have to join subset views of multiple tables. When queries get complex like this, it is often useful to use the concept of subqueries to help break the problem into smaller, more digestable tasks.
-
+SQL queries can get complex. For example, you might have been a little thrown off from the many to many join in the last lab. There you had to join four tables. This is just the tip of the iceberg. Depending on how your database is set up, you might have to join subset views of multiple tables. When queries get complex like this, it is often useful to use the concept of subqueries to help break the problem into smaller, more digestible tasks.
+M
 ## Objectives
 
 You will be able to:
@@ -15,7 +15,7 @@ You will be able to:
 
 As a handy reference, here's the schema for the CRM database you'll continue to practice with.
 
-<img src="Database-Schema.png" width=600>
+<img src="images/Database-Schema.png" width="600">
 
 
 ```python
@@ -250,7 +250,6 @@ df
 There it is! A query within a query! This can be very helpful and also allow you to break down problems into constituent parts. Often queries can be formulated in multiple ways as with the above example. Other times, using a subquery might be essential. For example, what if you wanted to find all of the employees from offices with at least 5 employees?  
 
 Think for a minute about how you might write such a query.  
-
 
 
 Now that you've had a minute to think it over, you might see some of the challenges with this query. On the one hand, we are looking to filter based on an aggregate condition: the number of employees per office. You know how to do this using a groupby and having clause, but the data we wish to retrieve is not aggregate data: we only wish to filter based on the aggregate, not retrieve aggregate data. As such, this is a natural place to use a subquery.
