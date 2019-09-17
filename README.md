@@ -11,7 +11,7 @@ You will be able to:
 
 * Write subqueries to decompose complex queries
 
-## Our Customer Relation Managment Database Schema
+## Our Customer Relation Management Database Schema
 
 As a handy reference, here's the schema for the CRM database you'll continue to practice with.
 
@@ -422,4 +422,4 @@ df
 
 ## Summary
 
-In this lesson, you were briefly introduced to the powerful concept of subqueries and how you can use them to write more complex queries. In the upcoming lab you'll really start to strengthen your SQL and data wrangling skills by using all of the SQL techniques introduced thus far.
+In this lesson, you were briefly introduced to the powerful concept of subqueries and how you can use them to write more complex queries. In the upcoming lab, you'll really start to strengthen your SQL and data wrangling skills by using all of the SQL techniques introduced thus far.
