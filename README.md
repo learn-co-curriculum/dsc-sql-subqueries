@@ -375,8 +375,8 @@ You can chain queries like this in many fashions. For example, maybe you're also
 
 
 ```python
-cur.execute("""SELECT AVG(cutomerAvgPayment) AS averagePayment
-               FROM (SELECT AVG(amount) AS cutomerAvgPayment
+cur.execute("""SELECT AVG(customerAvgPayment) AS averagePayment
+               FROM (SELECT AVG(amount) AS customerAvgPayment
                      FROM payments
                      JOIN customers USING(customerNumber)
                      GROUP BY customerNumber);""")
