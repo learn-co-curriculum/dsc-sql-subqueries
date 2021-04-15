@@ -1,4 +1,3 @@
-
 # SQL Subqueries
 
 ## Introduction
@@ -11,7 +10,7 @@ You will be able to:
 
 * Write subqueries to decompose complex queries
 
-## Our Customer Relation Management Database Schema
+## Our Customer Relationship Management ERD
 
 As a handy reference, here's the schema for the CRM database you'll continue to practice with.
 
@@ -26,24 +25,22 @@ import pandas as pd
 
 ```python
 conn = sqlite3.Connection('data.sqlite')
-cur = conn.cursor()
 ```
 
-## All of the Employees From the United States
+## Substituting `JOIN` with Subqueries
 
 Let's start with a query of employees from the United States. Using your current knowledge, you could solve this using a join.
 
 
 ```python
-cur.execute("""SELECT lastName, firstName, officeCode
-               FROM employees
-               JOIN offices
-               USING(officeCode)
-               WHERE country = "USA";
-               """)
-df = pd.DataFrame(cur.fetchall())
-df.columns = [x[0] for x in cur.description]
-df
+q = """
+SELECT lastName, firstName, officeCode
+FROM employees
+JOIN offices
+    USING(officeCode)
+WHERE country = "USA"
+;"""
+pd.read_sql(q, conn)
 ```
 
 
@@ -143,15 +140,15 @@ Another approach would be to use a subquery. Here's what it would look like:
 
 
 ```python
-cur.execute("""SELECT lastName, firstName, officeCode
-               FROM employees
-               WHERE officeCode IN (SELECT officeCode
-                                    FROM offices 
-                                    WHERE country = "USA");
-                                    """)
-df = pd.DataFrame(cur.fetchall())
-df.columns = [x[0] for x in cur.description]
-df
+q = """
+SELECT lastName, firstName, officeCode
+FROM employees
+WHERE officeCode IN (SELECT officeCode
+                     FROM offices 
+                     WHERE country = "USA")
+;
+"""
+pd.read_sql(q, conn)
 ```
 
 
@@ -247,27 +244,30 @@ df
 
 
 
-There it is, a query within a query! This can be very helpful and also allow you to break down problems into constituent parts. Often queries can be formulated in multiple ways as with the above example. Other times, using a subquery might be essential. For example, what if you wanted to find all of the employees from offices with at least 5 employees?  
+There it is, a query within a query! This can be very helpful and also allow you to break down problems into constituent parts. Often queries can be formulated in multiple ways as with the above example. Other times, using a subquery might be essential. For example, what if you wanted to find all of the employees from offices with at least 5 employees?
+
+## Subqueries for Filtering Based on an Aggregation
 
 Think for a minute about how you might write such a query.  
 
-
-Now that you've had a minute to think it over, you might see some of the challenges with this query. On the one hand, we are looking to filter based on an aggregate condition: the number of employees per office. You know how to do this using the `GROUP BY` and `HAVING` clauses, but the data we wish to retrieve is not aggregate data. We only wish to filter based on the aggregate, not retrieve aggregate data. As such, this is a natural place to use a subquery.
+Now that you've had a minute to think it over, you might see some of the challenges with this query. On the one hand, we are looking to filter based on an aggregate condition: the number of employees per office. You know how to do this using the `GROUP BY` and `HAVING` clauses, but the data we wish to retrieve is not aggregate data. We only wish to **filter** based on the aggregate, not retrieve aggregate data. As such, this is a natural place to use a subquery.
 
 
 ```python
-cur.execute("""SELECT lastName, firstName, officeCode
-               FROM employees
-               WHERE officeCode IN (SELECT officeCode 
-                                    FROM offices 
-                                    JOIN employees
-                                    USING(officeCode)
-                                    GROUP BY 1
-                                    HAVING COUNT(employeeNumber) >= 5);
-                                    """)
-df = pd.DataFrame(cur.fetchall())
-df.columns = [x[0] for x in cur.description]
-df
+q = """
+SELECT lastName, firstName, officeCode
+FROM employees
+WHERE officeCode IN (
+    SELECT officeCode 
+    FROM offices 
+    JOIN employees
+        USING(officeCode)
+    GROUP BY 1
+    HAVING COUNT(employeeNumber) >= 5
+)
+;
+"""
+pd.read_sql(q, conn)
 ```
 
 
@@ -369,20 +369,23 @@ df
 
 
 
-You can chain queries like this in many fashions. For example, maybe you're also a statistical geek and want to find the average of individual customers average payments:
+You can chain queries like this in many fashions. For example, maybe you want to find the average of individual customers' average payments:
 
-(It might be more interesting to investigate the standard deviation of customer's average payments, but standard deviation is not natively supported in sqlite as it is in other sql versions like postgreSQL.)
+(It might be more interesting to investigate the standard deviation of customer's average payments, but standard deviation is not natively supported in SQLite as it is in other SQL versions like PostgreSQL.)
 
 
 ```python
-cur.execute("""SELECT AVG(customerAvgPayment) AS averagePayment
-               FROM (SELECT AVG(amount) AS customerAvgPayment
-                     FROM payments
-                     JOIN customers USING(customerNumber)
-                     GROUP BY customerNumber);""")
-df = pd.DataFrame(cur.fetchall())
-df.columns = [x[0] for x in cur.description]
-df
+q = """
+SELECT AVG(customerAvgPayment) AS averagePayment
+FROM (
+    SELECT AVG(amount) AS customerAvgPayment
+    FROM payments
+    JOIN customers
+        USING(customerNumber)
+    GROUP BY customerNumber
+)
+;"""
+pd.read_sql(q, conn)
 ```
 
 
