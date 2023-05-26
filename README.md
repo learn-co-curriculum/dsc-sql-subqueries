@@ -423,6 +423,90 @@ pd.read_sql(q, conn)
 
 
 
+You can also run subqueries that reference keys with different names between different tables. For example you can use the employee number in the employees table and the matching sales rep employee number in the customers table.
+
+
+```python
+q = """
+SELECT lastName, firstName, employeeNumber
+FROM employees
+WHERE employeeNumber IN (SELECT salesRepEmployeeNumber
+                     FROM customers 
+                     WHERE country = "USA")
+;
+"""
+pd.read_sql(q, conn)
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>lastName</th>
+      <th>firstName</th>
+      <th>employeeNumber</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>Jennings</td>
+      <td>Leslie</td>
+      <td>1165</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Thompson</td>
+      <td>Leslie</td>
+      <td>1166</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>Firrelli</td>
+      <td>Julie</td>
+      <td>1188</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>Patterson</td>
+      <td>Steve</td>
+      <td>1216</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>Tseng</td>
+      <td>Foon Yue</td>
+      <td>1286</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>Vanauf</td>
+      <td>George</td>
+      <td>1323</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
 ## Summary
 
 In this lesson, you were briefly introduced to the powerful concept of subqueries and how you can use them to write more complex queries. In the upcoming lab, you'll really start to strengthen your SQL and data wrangling skills by using all of the SQL techniques introduced thus far.
