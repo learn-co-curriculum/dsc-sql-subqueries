@@ -14,7 +14,7 @@ You will be able to:
 
 As a handy reference, here's the schema for the CRM database you'll continue to practice with.
 
-<img src="images/Database-Schema.png" width="600">
+<img src="https://curriculum-content.s3.amazonaws.com/data-science/images/Database-Schema.png" width="600">
 
 
 ```python
